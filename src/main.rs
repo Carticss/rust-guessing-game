@@ -4,17 +4,15 @@ use rand::Rng;
 use std::cmp::Ordering;
 use std::io;
 
+const UPPER_BOUND: u32 = 100; // Define upper bound for random number generation
+
 fn main() {
     println!("Guess the number!");
 
-    let secret_number = rand::thread_rng().gen_range(1, 101);
+    let secret_number = rand::thread_rng().gen_range(1, UPPER_BOUND + 1);
 
-    print!("\n");
-    println!("The secret number is: {}", secret_number);
-    print!("\n");
     loop {
         println!("Please input your guess.");
-        print!("\n");
 
         let mut guess = String::new();
 
@@ -24,25 +22,23 @@ fn main() {
 
         let guess: u32 = match guess.trim().parse() {
             Ok(num) => num,
-            Err(err) => {
-                println!("{}", err);
+            Err(_) => {
+                println!("Please enter a valid number.");
                 continue;
             }
         };
 
-        print!("\n");
-        println!("You memory adress of a guess: {:?}", &guess as *const _);
-        print!("\n");
+        println!("You guessed: {}", guess);
+
         match guess.cmp(&secret_number) {
             Ordering::Less => println!("Too small!"),
             Ordering::Greater => println!("Too big!"),
             Ordering::Equal => {
-                print!("\n");
+                println!("You win!");
                 println!(
                     "You guessed: **** {} ** {:p} ****",
                     guess, &guess as *const _
                 );
-                println!("You win!");
                 break;
             }
         }
