@@ -12,28 +12,39 @@ fn main() {
     print!("\n");
     println!("The secret number is: {}", secret_number);
     print!("\n");
-    println!("Please input your guess.");
-    print!("\n");
+    loop {
+        println!("Please input your guess.");
+        print!("\n");
 
-    let mut guess = String::new();
+        let mut guess = String::new();
 
-    io::stdin()
-        .read_line(&mut guess)
-        .expect("Failed to read line");
+        io::stdin()
+            .read_line(&mut guess)
+            .expect("Failed to read line");
 
-    let guess: u32 = guess.trim().parse().expect("Please type a number!");
+        let guess: u32 = match guess.trim().parse() {
+            Ok(num) => num,
+            Err(err) => {
+                println!("{}", err);
+                continue;
+            }
+        };
 
-    print!("\n");
-    println!("You memory adress of a guess: {:?}", &guess as *const _);
-    print!("\n");
-    match guess.cmp(&secret_number) {
-        Ordering::Less => println!("Too small!"),
-        Ordering::Greater => println!("Too big!"),
-        Ordering::Equal => println!("You win!"),
+        print!("\n");
+        println!("You memory adress of a guess: {:?}", &guess as *const _);
+        print!("\n");
+        match guess.cmp(&secret_number) {
+            Ordering::Less => println!("Too small!"),
+            Ordering::Greater => println!("Too big!"),
+            Ordering::Equal => {
+                print!("\n");
+                println!(
+                    "You guessed: **** {} ** {:p} ****",
+                    guess, &guess as *const _
+                );
+                println!("You win!");
+                break;
+            }
+        }
     }
-    print!("\n");
-    println!(
-        "You guessed: **** {} ** {:p} ****",
-        guess, &guess as *const _
-    );
 }
